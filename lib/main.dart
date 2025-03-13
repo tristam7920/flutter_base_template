@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Provider 패키지 import
-import 'providers/auth_provider.dart'; // AuthProvider import
+import 'screens/splash_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/settings_screen.dart';
 
-// 더미 appTheme 정의 (추후 constants/theme.dart로 분리 가능)
 final ThemeData appTheme = ThemeData(
   primarySwatch: Colors.blue,
   visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -14,43 +12,24 @@ final ThemeData appTheme = ThemeData(
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
-      child: MyApp(),
-    ),
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  // const MyApp({Key? key}) : super(key: key);  // 생략하거나 그대로 사용해도 괜찮습니다.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Main Frame App',
+      title: 'Flutter Base Template',
       debugShowCheckedModeBanner: false,
       theme: appTheme,
-      initialRoute: '/',
+      // 최초 실행 시 SplashScreen을 보여줍니다.
+      home: SplashScreen(),
       routes: {
-        '/': (context) => AuthWrapper(),
         '/home': (context) => HomeScreen(),
         '/login': (context) => LoginScreen(),
         '/settings': (context) => SettingsScreen(),
       },
     );
-  }
-}
-
-class AuthWrapper extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-
-    if (authProvider.isLoading) {
-      return Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    } else {
-      return authProvider.isAuthenticated ? HomeScreen() : LoginScreen();
-    }
   }
 }
